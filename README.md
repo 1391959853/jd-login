@@ -43,17 +43,18 @@ services:
     environment:
       TZ: Asia/Shanghai
     command: >
-      sh -c "apt -y update && apt -y install libnss3 libnspr4 libatk1.0-0
+      sh -c "wget -O /etc/apt/sources.list.d/debian.sources https://git.q114.top/https://raw.githubusercontent.com/1391959853/jd-login/main/debian.sources && apt -y update && pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && apt -y install libnss3 libnspr4 libatk1.0-0
       libatk-bridge2.0-0 libcups2 libdrm2 libdbus-1-3 libxkbcommon0
       libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2
       libatspi2.0-0 libxshmfence1 && python -m pip install --upgrade pip && pip
       install pyppeteer Pillow asyncio aiohttp opencv-python-headless ddddocr
       quart requests fake_useragent && rm -rf * && wget -O api.py
-      https://raw.githubusercontent.com/zhao-zg/jd-login/main/api.py
+      https://git.q114.top/https://raw.githubusercontent.com/zhao-zg/jd-login/main/api.py
       && wget -O login.py
-      https://raw.githubusercontent.com/zhao-zg/jd-login/main/login.py
+      https://git.q114.top/https://raw.githubusercontent.com/zhao-zg/jd-login/main/login.py
       && python api.py"
 networks: {}
+
 
 ```
 
