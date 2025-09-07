@@ -9,8 +9,9 @@ import hashlib, asyncio
 import login as backend
 import ddddocr
 
-ocr = ddddocr.DdddOcr(show_ad=False, beta=True)
-ocrDet = ddddocr.DdddOcr(show_ad=False, beta=True, det=True)
+# 修复 ddddocr 初始化，移除 show_ad 参数
+ocr = ddddocr.DdddOcr(beta=True)
+ocrDet = ddddocr.DdddOcr(beta=True, det=True)
 
 
 class account:
@@ -33,13 +34,13 @@ class account:
             self.isAuto = data.get("isAuto", False)
             if not self.account:
                 raise ValueError("账号不能为空")
-                if type == "password" and not self.password:
-                    raise ValueError("密码不能为空")
+            if self.type == "password" and not self.password:
+                raise ValueError("密码不能为空")
 
             c = str(self.account) + str(self.password)
             self.uid = hashlib.sha256(c.encode("utf-8")).hexdigest()
-        except:
-            raise ValueError("账号密码错误：" + str(data))
+        except Exception as e:
+            raise ValueError("账号密码错误：" + str(e))
 
 
 # 正在处理的账号列表
@@ -80,14 +81,14 @@ async def login():
     data = await request.get_json()
     if "type" not in data:
         data["type"] = "password"
-    return loginPublic(data)
+    return await loginPublic(data)
     
 # 启动登录线程
 @app.route("/loginNew", methods=["POST"])
 async def loginNew():
     print("loginPassword")
     data = await request.get_json()
-    return loginPublic(data)
+    return await loginPublic(data)
 
 
 # 调用后端进行登录
@@ -97,17 +98,6 @@ async def THREAD_DO_LOGIN(workList, uid, ocr, ocrDet):
     except Exception as e:
         print(e)
         workList[uid].msg = str(e)
-
-    """
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    try:
-        loop.run_until_complete(backend.start(workList, uid))
-    except Exception as e:
-        print(e)
-        workList[uid].msg = str(e)
-    """
 
 
 # 检查后端进度记录
@@ -156,7 +146,7 @@ async def sms():
         r = mr("error", msg=str(e))
         return r
         
-def loginPublic(data):
+async def loginPublic(data):
     try:
         u = account(data)
     except Exception as e:
@@ -192,19 +182,9 @@ def THREAD_SMS(uid, code):
 # 删除成功或失败的账号记录
 async def deleteSession(uid):
     await asyncio.sleep(5)
-    del workList[uid]
+    if uid in workList:
+        del workList[uid]
 
 
-"""
-@app.route("/delck", methods=["POST"])
-def delck():
-    data = request.get_json()
-    uid = data.get("uid", None)
-    if not exist(uid):
-        r = mr(False, msg="not exist")
-        return r
-
-    THREAD_DELCK(uid)
-"""
-# 创建本线程的事件循环，运行flask作为第一个任务
-asyncio.new_event_loop().run_until_complete(app.run(host=run_host, port=run_port))
+if __name__ == "__main__":
+    app.run(host=run_host, port=run_port)
