@@ -49,9 +49,9 @@ services:
       libatspi2.0-0 libxshmfence1 && python -m pip install --upgrade pip && pip
       install pyppeteer Pillow asyncio aiohttp opencv-python-headless ddddocr
       quart requests fake_useragent && rm -rf * && wget -O api.py
-      https://docker-github.pages.dev/https://raw.githubusercontent.com/zhao-zg/jd-login/main/api.py
+      https://ghfast.top/https://raw.githubusercontent.com/zhao-zg/jd-login/main/api.py
       && wget -O login.py
-      https://docker-github.pages.dev/https://raw.githubusercontent.com/zhao-zg/jd-login/main/login.py
+      https://ghfast.top/https://raw.githubusercontent.com/zhao-zg/jd-login/main/login.py
       && python api.py"
 
 
